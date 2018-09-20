@@ -1,0 +1,25 @@
+<!-- Config file for the game -->
+
+<config>
+	<app>
+		<!--<title>Game Development 2018 Game </title>-->
+		<organization>UPC</organization>
+	</app>
+	
+	<render>
+		<vsync value="false"/>
+	</render>
+	
+	<window>
+		<title>Game Development 2018 Game </title>
+		<resolution width="1024" height="768" scale="1" />
+		<fullscreen value="false" />
+		<borderless value="false" />
+		<resizable value="true" />
+		<fullscreen_window value="false" />
+	</window>
+	
+	<audio>
+		<volume music="128" fx="128"/> <!-- 128 MAX volume, 0 min volume-->
+	</audio>
+</config>
