@@ -4,7 +4,7 @@
 #include "SDL/include/SDL.h"
 #include "p2Point.h"
 #include "j1Module.h"
-#include "j1App.h" //Porque si borro esto (que antes no estaba) me salen unos errores en el cpp? si ya lo tengo incluido en el cpp
+#include "j1App.h" //Pregunta???Porque si borro esto (que antes no estaba) me salen unos errores en el cpp? si ya lo tengo incluido en el cpp
 
 class j1Render : public j1Module
 {

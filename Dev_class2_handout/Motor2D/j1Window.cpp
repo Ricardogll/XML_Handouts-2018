@@ -21,18 +21,9 @@ j1Window::~j1Window()
 // Called before render is available
 bool j1Window::Awake(pugi::xml_node& config)
 {
-	//pugi::xml_document config_file;
-	//pugi::xml_node config;
-	
-	//pugi::xml_parse_result result = config_file.load_file("config.xml");
-
-	//if (result == NULL)
-	//	LOG("Could not load xml file config.xml. pugi error: %s", result.description());
-	//else
-	
+		
 	config = config.child("window");
-	//**************************
-
+	
 	LOG("Init SDL window & surface");
 	bool ret = true;
 
@@ -84,7 +75,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 
 			// TODO 4: Read the title of the app from the XML
 			// and set directly the window title using SetTitle()
-			//config=config_file.child("config");
+			
 			SetTitle(config.child("title").child_value());
 		}
 	}

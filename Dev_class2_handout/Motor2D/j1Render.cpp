@@ -30,7 +30,7 @@ bool j1Render::Awake(pugi::xml_node& config)
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
 	if (config.child("vsync").attribute("value").as_bool(true) == true) {
-		flags |= SDL_RENDERER_PRESENTVSYNC; // ??? operator OR with uint?
+		flags |= SDL_RENDERER_PRESENTVSYNC; // Pregunta??? operator OR with uint?
 		LOG("Vsync: ON");
 	}
 	else

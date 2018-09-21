@@ -44,7 +44,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	//if (App->input->GetKeyDown(SDL_SCANCODE_1))//Como va este modulo input???
+	//if (App->input->GetKeyDown(SDL_SCANCODE_1))
 	//{
 	//	App->audio->RaiseVolumeMusic();
 	//}
