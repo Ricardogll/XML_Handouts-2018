@@ -44,6 +44,11 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	// TODO 2: Call load / save methods when pressing l/s
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+		App->LoadGame();
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+		App->SaveGame();
 
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		App->render->camera.y -= 1;
@@ -56,6 +61,16 @@ bool j1Scene::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x += 1;
+
+	if (App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN) {
+		App->audio->RaiseVolumeMusic();
+		App->audio->RaiseVolumeFx();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_KP_MINUS) == KEY_DOWN) {
+		App->audio->DecreaseVolumeFx();
+		App->audio->DecreaseVolumeMusic();
+	}
 
 	App->render->Blit(img, 0, 0);
 	return true;

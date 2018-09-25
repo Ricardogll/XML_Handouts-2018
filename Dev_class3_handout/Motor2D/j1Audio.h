@@ -32,10 +32,16 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
+	void RaiseVolumeMusic();
+	void RaiseVolumeFx();
+	void DecreaseVolumeMusic();
+	void DecreaseVolumeFx();
 private:
 
 	_Mix_Music*			music;
 	p2List<Mix_Chunk*>	fx;
+	int music_volume = 0;
+	int fx_volume = 0;
 };
 
 #endif // __j1AUDIO_H__

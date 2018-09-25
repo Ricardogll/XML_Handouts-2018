@@ -48,6 +48,8 @@ public:
 	// that can be called anytime, even if they 
 	// will one execute by the very end of the frame
 	// Load / Save
+	void LoadGame();
+	void SaveGame() const;
 
 private:
 
@@ -68,6 +70,10 @@ private:
 
 	// Call modules after each loop iteration
 	bool PostUpdate();
+
+	bool RealLoadGame();
+	bool RealSaveGame();
+	
 
 public:
 
@@ -93,6 +99,11 @@ private:
 	p2SString			title;
 	p2SString			organization;
 
+	bool				want_to_load = false;
+	mutable bool		want_to_save = false;
+	mutable p2SString	save_game;
+	pugi::xml_node		save;
+	pugi::xml_document	savegame_file;
 };
 
 extern j1App* App;
