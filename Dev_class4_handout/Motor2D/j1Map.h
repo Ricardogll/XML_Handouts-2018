@@ -27,7 +27,7 @@ enum map_orientation {
 };
 
 enum map_render_order {
-	RENDER_ORDER_NONE = -1,
+	RENDER_ORDER_NONE = -1, //Pregunta??? no se puede llamar a los 2 NONE y liego hacer lo de mep_render_order:NONE ?
 	LEFT_DOWN,
 	LEFT_UP,
 	RIGHT_DOWN,
@@ -40,7 +40,7 @@ struct MapNode {
 	uint width = 0u;
 	uint height = 0u;
 	uint tilewidth = 0u;
-	uint tileheigth = 0u;
+	uint tileheight = 0u;
 	//nextobjectid
 };
 
@@ -66,15 +66,17 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
+	pugi::xml_node LoadMapNode(pugi::xml_document& config_file) const;
+	
 	
 private:
-	bool LoadMapData(MapNode mapnode);
-
+	void LoadMapData(MapNode mapnode);
+	void LoadTileSetData();
 public:
 
 	// TODO 1: Add your struct for map info as public for now
 	MapNode map_node;
-
+	p2List<TileSet*> tile_sets;
 private:
 
 	pugi::xml_document	map_file;

@@ -68,7 +68,28 @@ bool j1Map::Load(const char* file_name)
 	{
 		// TODO 3: Create and call a private function to load and fill
 		// all your map data
+
+		//pugi::xml_node map;
+		//
+
+		//map = LoadMapNode(map_file);
+		//p2SString aux = map.attribute("orientation").as_string();
+		//// if (map.attribute("orientation").as_string() == "orthogonal") Pregunta??? Porque esto no iguala?
+		//if(aux == "orthogonal")
+		//	map_node.orientation = ORTHOGONAL;
+
+		//aux = map.attribute("renderorder").as_string();
+
+		//if (aux == "right-down")
+		//	map_node.render_order = RIGHT_DOWN;
+
+		//map_node.height = map.attribute("height").as_uint();
+		//map_node.width = map.attribute("width").as_uint();
+		//map_node.tileheight = map.attribute("tileheight").as_uint();
+		//map_node.tilewidth = map.attribute("tilewidth").as_uint();
 		LoadMapData(map_node);
+		LoadTileSetData();
+
 	}
 
 	// TODO 4: Create and call a private function to load a tileset
@@ -79,6 +100,7 @@ bool j1Map::Load(const char* file_name)
 	{
 		// TODO 5: LOG all the data loaded
 		// iterate all tilesets and LOG everything
+
 	}
 
 	map_loaded = ret;
@@ -86,10 +108,66 @@ bool j1Map::Load(const char* file_name)
 	return ret;
 }
 
-bool j1Map::LoadMapData(MapNode mapnode) {
+void j1Map::LoadMapData(MapNode mapnode) {
 
-	map_file.name();
+	pugi::xml_node map;
 
-	return true;
+
+	map = LoadMapNode(map_file);
+	p2SString aux = map.attribute("orientation").as_string();
+	// if (map.attribute("orientation").as_string() == "orthogonal") Pregunta??? Porque esto no iguala?
+	if (aux == "orthogonal")
+		mapnode.orientation = ORTHOGONAL;
+	else
+		LOG("Loading map data error");
+
+	aux = map.attribute("renderorder").as_string();
+
+	if (aux == "right-down")
+		mapnode.render_order = RIGHT_DOWN;
+	else
+		LOG("Loading map data error");
+
+	mapnode.height = map.attribute("height").as_uint();
+	mapnode.width = map.attribute("width").as_uint();
+	mapnode.tileheight = map.attribute("tileheight").as_uint();
+	mapnode.tilewidth = map.attribute("tilewidth").as_uint();
+
+	
 }
 
+pugi::xml_node j1Map::LoadMapNode(pugi::xml_document& map_file) const
+{
+	pugi::xml_node ret;
+
+	pugi::xml_parse_result result = map_file.load_file("maps/hello2.tmx");
+
+	if (result == NULL)
+		LOG("Could not load map xml file map_file.xml. pugi error: %s", result.description());
+	else
+		ret = map_file.child("map");
+
+	return ret;
+}
+
+void j1Map::LoadTileSetData() {
+	pugi::xml_node tile;
+
+	TileSet *tileset = new TileSet;
+	tile_sets.add(tileset);
+	p2List_item<TileSet*>* item = tile_sets.start;
+	//tile = LoadMapNode(map_file);
+	//tile = tile.child("tileset");
+
+	for (pugi::xml_node tileset = map_file.child("map").child("tileset"); tileset; tileset = tileset.next_sibling("tileset")) 
+	{
+		item->data->margin = tileset.attribute("margin").as_uint();
+		item->data->firstgid = tileset.attribute("firstgid").as_uint();
+		item->data->spacing = tileset.attribute("spacing").as_uint();
+		item->data->tileheigth = tileset.attribute("tileheight").as_uint();
+		item->data->tilewidth = tileset.attribute("tilewidth").as_uint();
+
+		item->next;
+	}
+
+}
