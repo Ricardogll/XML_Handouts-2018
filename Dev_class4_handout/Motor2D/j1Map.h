@@ -5,6 +5,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "j1Module.h"
+#include "j1Render.h"
 
 // TODO 2: Create a struct to hold information for a TileSet
 // Ignore Terrain Types and Tile Types for now, but we want the image!
@@ -15,7 +16,8 @@ struct TileSet {
 	uint spacing = 0u;
 	uint margin = 0u;
 	uint tilewidth = 0u;
-	uint tileheigth = 0u;
+	uint tileheight = 0u;
+	SDL_Texture* texture;
 };
 
 // ----------------------------------------------------

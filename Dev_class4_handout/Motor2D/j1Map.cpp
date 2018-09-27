@@ -33,6 +33,20 @@ void j1Map::Draw()
 
 	// TODO 6: Iterate all tilesets and draw all their 
 	// images in 0,0 (you should have only one tileset for now)
+	//App->render->Blit(item_set->data->texture, position.x, position.y, &rect, 0.8);
+	p2List_item<TileSet*>* item_tileset = tile_sets.start;
+	SDL_Rect rect;
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 265;// item_tileset->data->tilewidth;
+	rect.h = 199;// item_tileset->data->tileheight;
+
+	while (item_tileset != nullptr) {
+		
+		App->render->Blit(item_tileset->data->texture, 0, 0, &rect);
+		item_tileset = item_tileset->next;
+	}
+
 
 }
 
@@ -164,8 +178,9 @@ void j1Map::LoadTileSetData() {
 		item->data->margin = tileset.attribute("margin").as_uint();
 		item->data->firstgid = tileset.attribute("firstgid").as_uint();
 		item->data->spacing = tileset.attribute("spacing").as_uint();
-		item->data->tileheigth = tileset.attribute("tileheight").as_uint();
+		item->data->tileheight = tileset.attribute("tileheight").as_uint();
 		item->data->tilewidth = tileset.attribute("tilewidth").as_uint();
+		item->data->texture = App->tex->Load("maps/tmw_desert_spacing.png"); //tileset.child.attribute("source").as_string()
 
 		item->next;
 	}
