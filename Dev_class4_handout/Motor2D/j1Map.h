@@ -21,7 +21,7 @@ struct TileSet {
 };
 
 // ----------------------------------------------------
-enum map_orientation {
+enum map_orientation { // Para hacer que los 2 puedan tener el mismo nombre hacemeos enum class
 	ORIENTATION_NONE = -1,
 	ORTHOGONAL,
 	ISOMETRIC
@@ -29,7 +29,7 @@ enum map_orientation {
 };
 
 enum map_render_order {
-	RENDER_ORDER_NONE = -1, //Pregunta??? no se puede llamar a los 2 NONE y liego hacer lo de mep_render_order:NONE ?
+	RENDER_ORDER_NONE = -1,
 	LEFT_DOWN,
 	LEFT_UP,
 	RIGHT_DOWN,
