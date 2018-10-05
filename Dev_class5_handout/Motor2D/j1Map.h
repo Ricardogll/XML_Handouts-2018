@@ -8,11 +8,22 @@
 
 // TODO 1: Create a struct for the map layer   **** Lint -> para que te diga warnings (en marketplace de visual studio) (sonar lint?)
 // ----------------------------------------------------
+enum LayerType {
+	LAYER_NONE = -1,
+	LAYER_FRONT,
+	LAYER_BACKGROUND,
+	LAYER_SKY
+
+};
+
+
 struct MapLayer {
 	p2SString name;
 	uint width = 0u;
 	uint height = 0u;
 	uint* data = nullptr;
+	LayerType type = LAYER_NONE;
+
 	~MapLayer() {
 		if (data != nullptr) // Si ponemos != NULL, llamamos a RELEASE. Sino podemos != nullptr y hacer delete
 			delete[] data;

@@ -28,30 +28,48 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	if(map_loaded == false)
+	if (map_loaded == false)
 		return;
 
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
-	p2List_item<TileSet*>* tileset_item = data.tilesets.start;
+	p2List_item<TileSet*>* tileset_item = data.tilesets.end;//to print bg first and blit platforms on top of it
 	p2List_item<MapLayer*>* layers_item = data.layers.start;
 
 	//if (tileset_item->data->Get(i, j) != 0) 
-	for (uint x = 0; x < data.width; x++) {
-		
-		for (uint y = 0; y < data.height; y++) {
+	while (tileset_item != NULL) {
 
-			SDL_Rect rect = tileset_item->data->GetTileRect(layers_item->data->Get(x, y));
-			iPoint world_coords = MapToWorld(x, y);
-			App->render->Blit(tileset_item->data->texture, world_coords.x, world_coords.y, &rect);
+		layers_item = data.layers.start;
+
+		while (layers_item != NULL) {
+
+			for (uint x = 0; x < layers_item->data->width; x++) {
+
+				for (uint y = 0; y < layers_item->data->height; y++) {
+
+					SDL_Rect rect = tileset_item->data->GetTileRect(layers_item->data->Get(x, y));
+					iPoint world_coords = MapToWorld(x, y);
+
+					if (layers_item->data->type == LAYER_FRONT) {
+						App->render->Blit(tileset_item->data->texture, world_coords.x, world_coords.y, &rect, 1.0f);
+					}
+					else if (layers_item->data->type == LAYER_BACKGROUND) {
+						App->render->Blit(tileset_item->data->texture, world_coords.x, world_coords.y, &rect, 0.7f);
+					}
+					else if (layers_item->data->type == LAYER_SKY) {
+						App->render->Blit(tileset_item->data->texture, world_coords.x, world_coords.y, &rect, 1.0f);
+					}
+				}
+
+			}
+			layers_item = layers_item->next;
 		}
-
+		tileset_item = tileset_item->prev;
 	}
 
-	
-	
+}
 		// TODO 9: Complete the draw function
 
-}
+
 
 
 iPoint j1Map::MapToWorld(int x, int y) const
@@ -333,15 +351,19 @@ bool j1Map::LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set)
 // TODO 3: Create the definition for a function that loads a single layer
 bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 {
-	//pugi::xml_node layernode = map_file.child("map").child("layer");
+	
 	const int size = layer->height*layer->width;
 	
-	/*layer->name= layernode.attribute("name").as_string();
-	layer->height = layernode.attribute("height").as_uint();
-	layer->width = layernode.attribute("width").as_uint();*/
-	//SAME AS THIS?
+	
 	
 	layer->name = node.attribute("name").as_string();
+	if (layer->name == "Capa de Patrones 1")
+		layer->type = LAYER_FRONT;
+	else if (layer->name == "Capa de patrones 2")//CHANGE NAMES AFTER
+		layer->type = LAYER_BACKGROUND;
+	else if (layer->name == "Capa de patrones 3")//CHANGE NAMES AFTER
+		layer->type = LAYER_SKY;
+
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
 	
