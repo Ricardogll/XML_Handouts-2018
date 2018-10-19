@@ -42,7 +42,7 @@ void j1Map::PropagateBFS()
 	iPoint neighbours[4];
 
 	if (frontier.start != NULL) {
-		p2Queue_item<iPoint>* frontier_item = frontier.GetLast();
+		p2Queue_item<iPoint>* frontier_item = frontier.start;
 		frontier.Pop(frontier_item->data);
 		
 		neighbours[0] = { frontier_item->data.x , frontier_item->data.y - 1 };
@@ -52,7 +52,7 @@ void j1Map::PropagateBFS()
 
 		for (uint i = 0; i < 4; i++) {
 			
-			if (visited.find(neighbours[i]) == -1) {
+			if (visited.find(neighbours[i]) == -1 && IsWalkable(neighbours[i].x, neighbours[i].y)) {
 				visited.add(neighbours[i]);
 				frontier.Push(neighbours[i]);
 			}
@@ -106,15 +106,22 @@ bool j1Map::IsWalkable(int x, int y) const
 	// and the tile is walkable (tile id 0 in the navigation layer)
 	bool ret = false;
 
-	p2List_item<MapLayer*>* item = data.layers.start;
-
-	for (p2List_item<Properties::Property*>* props=data.layers.start->data->properties.list.start; props; props->next) {//item->data->properties.list.start != )
+	p2List_item<MapLayer*>* item = data.layers.end;
+	
+	
+	
+	p2List_item<Properties::Property*>* props = item->data->properties.list.start;
+	/*for (uint i = 0; i < item->data->Get(x, y); i++) {
+		props = props->next;
 		
+	}*/
 
-	}
-	if (data.height >= y && data.width >= y && ) {
+	//data.tilesets.find(item->data->Get(x, y));
+	
+	if ((x <= data.width && x > 0) && (y <= data.height && y >= 0)  ) {
 		ret = true;
 	}
+	
 
 	return ret;
 }

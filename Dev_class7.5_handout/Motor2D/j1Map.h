@@ -78,6 +78,11 @@ struct TileSet
 	int					offset_y;
 };
 
+
+struct Visiteds {
+	iPoint tile;
+	iPoint came_from;
+};
 enum MapTypes
 {
 	MAPTYPE_UNKNOWN = 0,
@@ -151,7 +156,8 @@ private:
 
 	/// BFS
 	p2Queue<iPoint>		frontier;
-	p2List<iPoint>		visited;
+	p2List<Visiteds>	visited;
+	p2List<iPoint>		came_from;
 };
 
 #endif // __j1MAP_H__
