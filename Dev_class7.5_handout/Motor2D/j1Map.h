@@ -79,10 +79,7 @@ struct TileSet
 };
 
 
-struct Visiteds {
-	iPoint tile;
-	iPoint came_from;
-};
+
 enum MapTypes
 {
 	MAPTYPE_UNKNOWN = 0,
@@ -104,6 +101,7 @@ struct MapData
 };
 
 // ----------------------------------------------------
+
 class j1Map : public j1Module
 {
 public:
@@ -133,6 +131,7 @@ public:
 	void DrawBFS();
 	bool IsWalkable(int x, int y) const;
 	void ResetBFS();
+	void DoPathToMouse();
 
 private:
 
@@ -143,10 +142,13 @@ private:
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
 
 	TileSet* GetTilesetFromTileId(int id) const;
-
+	iPoint GetMapCoordsFromMouse();
+	int Get1DFrom2D(int x, int y) const;
+	
 public:
 
 	MapData data;
+	bool draw_came_from = false;
 
 private:
 
@@ -156,8 +158,11 @@ private:
 
 	/// BFS
 	p2Queue<iPoint>		frontier;
-	p2List<Visiteds>	visited;
 	p2List<iPoint>		came_from;
+	p2List<iPoint>		visited;
+	p2List<iPoint> path;
+
+	
 };
 
 #endif // __j1MAP_H__

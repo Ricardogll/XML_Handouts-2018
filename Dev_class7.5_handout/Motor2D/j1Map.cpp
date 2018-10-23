@@ -4,6 +4,7 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Map.h"
+#include "j1Input.h"
 #include <math.h>
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
@@ -24,6 +25,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 	folder.create(config.child("folder").child_value());
 	ResetBFS();
 
+	
 	return ret;
 }
 
@@ -33,6 +35,8 @@ void j1Map::ResetBFS()
 	visited.clear();
 	frontier.Push(iPoint(19, 4)); //all green
 	visited.add(iPoint(19, 4));//all red
+	//came_from.add(iPoint(19, 4));
+	
 }
 
 void j1Map::PropagateBFS()
@@ -54,7 +58,14 @@ void j1Map::PropagateBFS()
 			
 			if (visited.find(neighbours[i]) == -1 && IsWalkable(neighbours[i].x, neighbours[i].y)) {
 				visited.add(neighbours[i]);
+				iPoint aux = frontier_item->data;
+				if (came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] == iPoint(-1, -1) && neighbours[i] != aux)
+					came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] = aux;
+
 				frontier.Push(neighbours[i]);
+				
+				
+				
 			}
 		}
 
@@ -64,6 +75,32 @@ void j1Map::PropagateBFS()
 
 	// TODO 2: For each neighbor, if not visited, add it
 	// to the frontier queue and visited list
+}
+
+int j1Map::Get1DFrom2D(int x, int y) const
+{
+	return (y*data.width) + x;
+}
+iPoint j1Map::GetMapCoordsFromMouse() {
+	int x, y;
+	App->input->GetMousePosition(x, y);
+	return (App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y));
+}
+
+void j1Map::DoPathToMouse() {
+
+		path.clear();
+
+		iPoint current = GetMapCoordsFromMouse();
+		if (came_from.find(current)) {
+			while (current != iPoint(19, 4)) {
+				path.add(current);
+				int pos = Get1DFrom2D(current.x, current.y);
+				current = came_from[pos];
+
+			}
+		}
+	
 }
 
 void j1Map::DrawBFS()
@@ -85,6 +122,27 @@ void j1Map::DrawBFS()
 
 		item = item->next;
 	}
+
+	// Draw came_from
+	//came_from.find()
+
+	if (draw_came_from) {
+		p2List_item<iPoint>* item2 = path.start;
+
+		while (item2)
+		{
+			point = item2->data;
+			TileSet* tileset = GetTilesetFromTileId(27);
+
+			SDL_Rect r = tileset->GetTileRect(27);
+			iPoint pos = MapToWorld(point.x, point.y);
+
+			App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+
+			item2 = item2->next;
+		}
+	}
+	
 
 	// Draw frontier
 	for (uint i = 0; i < frontier.Count(); ++i)
@@ -118,7 +176,7 @@ bool j1Map::IsWalkable(int x, int y) const
 
 	//data.tilesets.find(item->data->Get(x, y));
 	
-	if ((x <= data.width && x > 0) && (y <= data.height && y >= 0)  ) {
+	if ((x < data.width && x >= 0) && (y < data.height && y >= 0)  && item->data->Get(x,y) == 0) {
 		ret = true;
 	}
 	
@@ -367,6 +425,12 @@ bool j1Map::Load(const char* file_name)
 	}
 
 	map_loaded = ret;
+
+	for (int i = 0; i < data.width; i++) {
+		for (int j = 0; j < data.height; j++) {
+			came_from.add(iPoint(-1, -1));
+		}
+	}
 
 	return ret;
 }

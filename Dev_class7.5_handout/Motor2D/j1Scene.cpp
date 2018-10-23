@@ -70,6 +70,10 @@ bool j1Scene::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 		App->map->PropagateBFS();
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN) {
+		App->map->draw_came_from = true;
+		App->map->DoPathToMouse();
+	}
 
 	App->map->Draw();
 
