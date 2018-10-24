@@ -161,6 +161,7 @@ private:
 	p2List<iPoint>		came_from;
 	p2List<iPoint>		visited;
 	p2List<iPoint> path;
+	p2List<iPoint> breadcrumbs;
 
 	
 };

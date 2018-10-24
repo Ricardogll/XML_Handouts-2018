@@ -36,6 +36,7 @@ void j1Map::ResetBFS()
 	frontier.Push(iPoint(19, 4)); //all green
 	visited.add(iPoint(19, 4));//all red
 	//came_from.add(iPoint(19, 4));
+	breadcrumbs.add(iPoint(19, 4));
 	
 }
 
@@ -47,6 +48,7 @@ void j1Map::PropagateBFS()
 
 	if (frontier.start != NULL) {
 		p2Queue_item<iPoint>* frontier_item = frontier.start;
+		iPoint aux = frontier_item->data;
 		frontier.Pop(frontier_item->data);
 		
 		neighbours[0] = { frontier_item->data.x , frontier_item->data.y - 1 };
@@ -58,9 +60,10 @@ void j1Map::PropagateBFS()
 			
 			if (visited.find(neighbours[i]) == -1 && IsWalkable(neighbours[i].x, neighbours[i].y)) {
 				visited.add(neighbours[i]);
-				iPoint aux = frontier_item->data;
+				/*iPoint aux = frontier_item->data;
 				if (came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] == iPoint(-1, -1) && neighbours[i] != aux)
-					came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] = aux;
+					came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] = aux;*/
+				breadcrumbs.add(aux);
 
 				frontier.Push(neighbours[i]);
 				
@@ -91,7 +94,7 @@ void j1Map::DoPathToMouse() {
 
 		path.clear();
 
-		iPoint current = GetMapCoordsFromMouse();
+		/*iPoint current = GetMapCoordsFromMouse();
 		if (came_from.find(current)) {
 			while (current != iPoint(19, 4)) {
 				path.add(current);
@@ -99,6 +102,20 @@ void j1Map::DoPathToMouse() {
 				current = came_from[pos];
 
 			}
+		}*/
+		iPoint current = GetMapCoordsFromMouse();
+		if (breadcrumbs.find(current)) {
+			while (current != iPoint(19, 4)) {
+				path.add(current);
+				if (breadcrumbs.count() >= visited.find(current)) {
+					current = breadcrumbs[visited.find(current)];
+				}
+				else {
+					path.clear();
+					break;
+				}
+			}
+
 		}
 	
 }
