@@ -4,7 +4,6 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Map.h"
-#include "j1Input.h"
 #include <math.h>
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
@@ -23,105 +22,157 @@ bool j1Map::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	folder.create(config.child("folder").child_value());
-	ResetBFS();
+	ResetPath();
 
-	
 	return ret;
 }
 
-void j1Map::ResetBFS()
+bool j1Map::Start()
+{
+	tile_x = App->tex->Load("maps/x.png");
+	return true;
+}
+
+void j1Map::ResetPath()
 {
 	frontier.Clear();
 	visited.clear();
-	frontier.Push(iPoint(19, 4)); //all green
-	visited.add(iPoint(19, 4));//all red
-	//came_from.add(iPoint(19, 4));
+	breadcrumbs.clear();
+	frontier.Push(iPoint(19, 4), 0);
+	visited.add(iPoint(19, 4));
 	breadcrumbs.add(iPoint(19, 4));
-	
+	memset(cost_so_far, 0, sizeof(uint) * COST_MAP * COST_MAP);
 }
 
-void j1Map::PropagateBFS()
+
+
+void j1Map::Path(int x, int y)
 {
-	// TODO 1: If frontier queue contains elements
-	// pop the last one and calculate its 4 neighbors
-	iPoint neighbours[4];
+	path.Clear();
+	iPoint goal = WorldToMap(x, y);
 
-	if (frontier.start != NULL) {
-		p2Queue_item<iPoint>* frontier_item = frontier.start;
-		iPoint aux = frontier_item->data;
-		frontier.Pop(frontier_item->data);
-		
-		neighbours[0] = { frontier_item->data.x , frontier_item->data.y - 1 };
-		neighbours[1] = { frontier_item->data.x + 1, frontier_item->data.y };
-		neighbours[2] = { frontier_item->data.x , frontier_item->data.y + 1};
-		neighbours[3] = { frontier_item->data.x - 1, frontier_item->data.y };
+	// TODO 2: Follow the breadcrumps to goal back to the origin
+	// add each step into "path" dyn array (it will then draw automatically)
 
-		for (uint i = 0; i < 4; i++) {
-			
-			if (visited.find(neighbours[i]) == -1 && IsWalkable(neighbours[i].x, neighbours[i].y)) {
-				visited.add(neighbours[i]);
-				/*iPoint aux = frontier_item->data;
-				if (came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] == iPoint(-1, -1) && neighbours[i] != aux)
-					came_from[Get1DFrom2D(neighbours[i].x, neighbours[i].y)] = aux;*/
-				breadcrumbs.add(aux);
+	
 
-
-				frontier.Push(neighbours[i]);
-				
-				
-				
+	iPoint current = goal;
+	if (breadcrumbs.find(current)) {
+		while (current != iPoint(19, 4)) {
+			path.PushBack(current);
+			if (breadcrumbs.count() >= visited.find(current)) {
+				current = breadcrumbs[visited.find(current)];
+			}
+			else {
+				path.Clear();
+				break;
 			}
 		}
-
 
 	}
 
 
-	// TODO 2: For each neighbor, if not visited, add it
-	// to the frontier queue and visited list
 }
 
-int j1Map::Get1DFrom2D(int x, int y) const
+void j1Map::PropagateDijkstra()
 {
-	return (y*data.width) + x;
-}
-iPoint j1Map::GetMapCoordsFromMouse() {
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	return (App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y));
-}
+	// TODO 3: Taking BFS as a reference, implement the Dijkstra algorithm
+	// use the 2 dimensional array "cost_so_far" to track the accumulated costs
+	// on each cell (is already reset to 0 automatically)
 
-void j1Map::DoPathToMouse() {
+	/*
+	iPoint curr;
+	if (frontier.Pop(curr))
+	{
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
 
-		path.clear();
-
-		/*iPoint current = GetMapCoordsFromMouse();
-		if (came_from.find(current)) {
-			while (current != iPoint(19, 4)) {
-				path.add(current);
-				int pos = Get1DFrom2D(current.x, current.y);
-				current = came_from[pos];
-
-			}
-		}*/
-		iPoint current = GetMapCoordsFromMouse();
-		if (breadcrumbs.find(current)) {
-			while (current != iPoint(19, 4)) {
-				path.add(current);
-				if (breadcrumbs.count() >= visited.find(current)) {
-					current = breadcrumbs[visited.find(current)];
-				}
-				else {
-					path.clear();
-					break;
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
+			{
+				if (visited.find(neighbors[i]) == -1)
+				{
+					frontier.Push(neighbors[i], 0);
+					visited.add(neighbors[i]);
+					breadcrumbs.add(curr);
 				}
 			}
-
 		}
-	
+	}*/
+	iPoint curr;
+	if (frontier.Pop(curr))
+	{
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
+			if ((cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
+				&& (neighbors[i].x<data.width && neighbors[i].x>0 && neighbors[i].y<data.height && neighbors[i].y>0))
+			{
+				cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
+				frontier.Push(neighbors[i], new_cost);
+				breadcrumbs.add(curr);
+			}
+		}
+	}
+
 }
 
-void j1Map::DrawBFS()
+int j1Map::MovementCost(int x, int y) const
+{
+	int ret = -1;
+
+	if (x >= 0 && x < data.width && y >= 0 && y < data.height)
+	{
+		int id = data.layers.start->next->data->Get(x, y);
+
+		if (id == 0)
+			ret = 3;
+		else
+			ret = 0;
+	}
+
+	return ret;
+}
+
+void j1Map::PropagateBFS()
+{
+	// TODO 1: Record the direction to the previous node 
+	// with the new list "breadcrumps"
+	iPoint curr;
+	if (frontier.Pop(curr))
+	{
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
+			{
+				if (visited.find(neighbors[i]) == -1)
+				{
+					frontier.Push(neighbors[i], 0);
+					visited.add(neighbors[i]);
+					breadcrumbs.add(curr);
+				}
+			}
+		}
+	}
+}
+
+void j1Map::DrawPath()
 {
 	iPoint point;
 
@@ -141,27 +192,6 @@ void j1Map::DrawBFS()
 		item = item->next;
 	}
 
-	// Draw came_from
-	//came_from.find()
-
-	if (draw_came_from) {
-		p2List_item<iPoint>* item2 = path.start;
-
-		while (item2)
-		{
-			point = item2->data;
-			TileSet* tileset = GetTilesetFromTileId(27);
-
-			SDL_Rect r = tileset->GetTileRect(27);
-			iPoint pos = MapToWorld(point.x, point.y);
-
-			App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-
-			item2 = item2->next;
-		}
-	}
-	
-
 	// Draw frontier
 	for (uint i = 0; i < frontier.Count(); ++i)
 	{
@@ -174,32 +204,12 @@ void j1Map::DrawBFS()
 		App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 	}
 
-}
-
-bool j1Map::IsWalkable(int x, int y) const
-{
-	// TODO 3: return true only if x and y are within map limits
-	// and the tile is walkable (tile id 0 in the navigation layer)
-	bool ret = false;
-
-	p2List_item<MapLayer*>* item = data.layers.end;
-	
-	
-	
-	p2List_item<Properties::Property*>* props = item->data->properties.list.start;
-	/*for (uint i = 0; i < item->data->Get(x, y); i++) {
-		props = props->next;
-		
-	}*/
-
-	//data.tilesets.find(item->data->Get(x, y));
-	
-	if ((x < data.width && x >= 0) && (y < data.height && y >= 0)  && item->data->Get(x,y) == 0) {
-		ret = true;
+	// Draw path
+	for (uint i = 0; i < path.Count(); ++i)
+	{
+		iPoint pos = MapToWorld(path[i].x, path[i].y);
+		App->render->Blit(tile_x, pos.x, pos.y);
 	}
-	
-
-	return ret;
 }
 
 void j1Map::Draw()
@@ -234,7 +244,7 @@ void j1Map::Draw()
 		}
 	}
 
-	DrawBFS();
+	DrawPath();
 }
 
 int Properties::Get(const char* value, int default_value) const
@@ -299,7 +309,7 @@ iPoint j1Map::WorldToMap(int x, int y) const
 
 	if(data.type == MAPTYPE_ORTHOGONAL)
 	{
-		ret.x = x / data.tile_width;
+		ret.x = (x / data.tile_width);
 		ret.y = y / data.tile_height;
 	}
 	else if(data.type == MAPTYPE_ISOMETRIC)
@@ -307,7 +317,7 @@ iPoint j1Map::WorldToMap(int x, int y) const
 		
 		float half_width = data.tile_width * 0.5f;
 		float half_height = data.tile_height * 0.5f;
-		ret.x = int( (x / half_width + y / half_height) / 2);
+		ret.x = int( (x / half_width + y / half_height) / 2) - 1;
 		ret.y = int( (y / half_height - (x / half_width)) / 2);
 	}
 	else
@@ -443,12 +453,6 @@ bool j1Map::Load(const char* file_name)
 	}
 
 	map_loaded = ret;
-
-	for (int i = 0; i < data.width; i++) {
-		for (int j = 0; j < data.height; j++) {
-			came_from.add(iPoint(-1, -1));
-		}
-	}
 
 	return ret;
 }
