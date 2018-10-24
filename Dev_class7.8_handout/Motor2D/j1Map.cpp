@@ -30,6 +30,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 bool j1Map::Start()
 {
 	tile_x = App->tex->Load("maps/x.png");
+	goal = { 4,7 };
 	return true;
 }
 
@@ -42,6 +43,7 @@ void j1Map::ResetPath()
 	visited.add(iPoint(19, 4));
 	breadcrumbs.add(iPoint(19, 4));
 	memset(cost_so_far, 0, sizeof(uint) * COST_MAP * COST_MAP);
+	
 }
 
 
@@ -80,47 +82,29 @@ void j1Map::PropagateDijkstra()
 	// use the 2 dimensional array "cost_so_far" to track the accumulated costs
 	// on each cell (is already reset to 0 automatically)
 
-	/*
-	iPoint curr;
-	if (frontier.Pop(curr))
-	{
-		iPoint neighbors[4];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-
-		for (uint i = 0; i < 4; ++i)
+	if (stop_dijkstra == false) {
+		iPoint curr;
+		if (frontier.Pop(curr))
 		{
-			if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
+			iPoint neighbors[4];
+			neighbors[0].create(curr.x + 1, curr.y + 0);
+			neighbors[1].create(curr.x + 0, curr.y + 1);
+			neighbors[2].create(curr.x - 1, curr.y + 0);
+			neighbors[3].create(curr.x + 0, curr.y - 1);
+
+			for (uint i = 0; i < 4; ++i)
 			{
-				if (visited.find(neighbors[i]) == -1)
+				uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
+				if ((cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
+					&& (neighbors[i].x < data.width && neighbors[i].x >= 0 && neighbors[i].y < data.height && neighbors[i].y >= 0))
 				{
-					frontier.Push(neighbors[i], 0);
-					visited.add(neighbors[i]);
+					cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
+					frontier.Push(neighbors[i], new_cost);
 					breadcrumbs.add(curr);
+					visited.add(neighbors[i]); // add here just to print?
+					if (neighbors[i] == goal)
+						stop_dijkstra=true;
 				}
-			}
-		}
-	}*/
-	iPoint curr;
-	if (frontier.Pop(curr))
-	{
-		iPoint neighbors[4];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-
-		for (uint i = 0; i < 4; ++i)
-		{
-			uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
-			if ((cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
-				&& (neighbors[i].x<data.width && neighbors[i].x>0 && neighbors[i].y<data.height && neighbors[i].y>0))
-			{
-				cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
-				frontier.Push(neighbors[i], new_cost);
-				breadcrumbs.add(curr);
 			}
 		}
 	}

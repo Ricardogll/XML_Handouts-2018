@@ -62,8 +62,10 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x -= 1;
 
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) {
+		App->map->stop_dijkstra = false;
 		App->map->ResetPath();
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 		App->map->PropagateBFS();

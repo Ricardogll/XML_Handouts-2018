@@ -151,7 +151,7 @@ private:
 public:
 
 	MapData data;
-
+	bool stop_dijkstra = false;
 private:
 
 	pugi::xml_document	map_file;
@@ -165,6 +165,8 @@ private:
 	uint				cost_so_far[COST_MAP][COST_MAP];
 	p2DynArray<iPoint>	path;
 	SDL_Texture*		tile_x = nullptr;
+	iPoint				goal;
+	
 };
 
 #endif // __j1MAP_H__
