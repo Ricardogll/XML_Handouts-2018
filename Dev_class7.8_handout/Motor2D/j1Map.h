@@ -131,12 +131,15 @@ public:
 	int MovementCost(int x, int y) const;
 	void ResetPath();
 	void DrawPath();
-	void Path(int x, int y);
+	void Path(int x, int y, bool world_to_map=true);
 
 	// Propagation style
 	void PropagateBFS();
 	void PropagateDijkstra();
-	
+	void PropagateAStar();
+
+	//Distance
+	int SquareRootDistance(iPoint from, iPoint to);
 
 private:
 
@@ -152,6 +155,7 @@ public:
 
 	MapData data;
 	bool stop_dijkstra = false;
+	iPoint				goal;
 private:
 
 	pugi::xml_document	map_file;
@@ -165,7 +169,7 @@ private:
 	uint				cost_so_far[COST_MAP][COST_MAP];
 	p2DynArray<iPoint>	path;
 	SDL_Texture*		tile_x = nullptr;
-	iPoint				goal;
+	
 	
 };
 

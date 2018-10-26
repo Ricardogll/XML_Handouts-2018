@@ -48,11 +48,13 @@ void j1Map::ResetPath()
 
 
 
-void j1Map::Path(int x, int y)
+void j1Map::Path(int x, int y, bool world_to_map)
 {
 	path.Clear();
-	iPoint goal = WorldToMap(x, y);
-
+	if (world_to_map)
+		iPoint goal = WorldToMap(x, y);
+	else
+		iPoint goal = { x,y };
 	// TODO 2: Follow the breadcrumps to goal back to the origin
 	// add each step into "path" dyn array (it will then draw automatically)
 
@@ -73,6 +75,49 @@ void j1Map::Path(int x, int y)
 
 	}
 
+
+}
+
+int j1Map::SquareRootDistance(iPoint from, iPoint to) {
+	iPoint aux;
+	aux.x = to.x - from.x;
+	aux.y = to.y - from.y;
+	return aux.x*aux.x + aux.y*aux.y;
+}
+
+
+void j1Map::PropagateAStar() {
+	if (stop_dijkstra == false) {
+		iPoint curr;
+		if (frontier.Pop(curr))
+		{
+			iPoint neighbors[4];
+			neighbors[0].create(curr.x + 1, curr.y + 0);
+			neighbors[1].create(curr.x + 0, curr.y + 1);
+			neighbors[2].create(curr.x - 1, curr.y + 0);
+			neighbors[3].create(curr.x + 0, curr.y - 1);
+
+			for (uint i = 0; i < 4; ++i)
+			{
+				uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
+				if ((cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
+					&& (neighbors[i].x < data.width && neighbors[i].x >= 0 && neighbors[i].y < data.height && neighbors[i].y >= 0))
+				{
+					int cost_distance = SquareRootDistance(neighbors[i],goal);
+					cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
+					frontier.Push(neighbors[i], new_cost + cost_distance);
+					breadcrumbs.add(curr);
+					visited.add(neighbors[i]); // add here just to print?
+					if (neighbors[i] == goal) {
+						stop_dijkstra = true;
+						//iPoint goal_world = MapToWorld(goal.x,goal.y);
+						//Path(goal_world.x - App->render->camera.x, goal_world.y - App->render->camera.y);
+						Path(goal.x, goal.y, false);
+					}
+				}
+			}
+		}
+	}
 
 }
 
@@ -102,8 +147,12 @@ void j1Map::PropagateDijkstra()
 					frontier.Push(neighbors[i], new_cost);
 					breadcrumbs.add(curr);
 					visited.add(neighbors[i]); // add here just to print?
-					if (neighbors[i] == goal)
-						stop_dijkstra=true;
+					if (neighbors[i] == goal) {
+						stop_dijkstra = true;
+						//iPoint goal_world = MapToWorld(goal.x,goal.y);
+						//Path(goal_world.x - App->render->camera.x, goal_world.y - App->render->camera.y);
+						Path(goal.x, goal.y, false);
+					}
 				}
 			}
 		}
