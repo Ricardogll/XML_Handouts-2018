@@ -154,7 +154,7 @@ private:
 public:
 
 	MapData data;
-	bool stop_dijkstra = false;
+	bool stop_pathfinding = false;
 	iPoint				goal;
 private:
 

@@ -87,7 +87,7 @@ int j1Map::SquareRootDistance(iPoint from, iPoint to) {
 
 
 void j1Map::PropagateAStar() {
-	if (stop_dijkstra == false) {
+	if (stop_pathfinding == false) {
 		iPoint curr;
 		if (frontier.Pop(curr))
 		{
@@ -101,7 +101,7 @@ void j1Map::PropagateAStar() {
 			{
 				uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
 				if ((cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
-					&& (neighbors[i].x < data.width && neighbors[i].x >= 0 && neighbors[i].y < data.height && neighbors[i].y >= 0))
+					&& (neighbors[i].x < data.width && neighbors[i].x >= 0 && neighbors[i].y < data.height && neighbors[i].y >= 0))//Not outside the map
 				{
 					int cost_distance = SquareRootDistance(neighbors[i],goal);
 					cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
@@ -109,7 +109,7 @@ void j1Map::PropagateAStar() {
 					breadcrumbs.add(curr);
 					visited.add(neighbors[i]); // add here just to print?
 					if (neighbors[i] == goal) {
-						stop_dijkstra = true;
+						stop_pathfinding = true;
 						//iPoint goal_world = MapToWorld(goal.x,goal.y);
 						//Path(goal_world.x - App->render->camera.x, goal_world.y - App->render->camera.y);
 						Path(goal.x, goal.y, false);
@@ -127,7 +127,7 @@ void j1Map::PropagateDijkstra()
 	// use the 2 dimensional array "cost_so_far" to track the accumulated costs
 	// on each cell (is already reset to 0 automatically)
 
-	if (stop_dijkstra == false) {
+	if (stop_pathfinding == false) {
 		iPoint curr;
 		if (frontier.Pop(curr))
 		{
@@ -141,14 +141,14 @@ void j1Map::PropagateDijkstra()
 			{
 				uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
 				if ((cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
-					&& (neighbors[i].x < data.width && neighbors[i].x >= 0 && neighbors[i].y < data.height && neighbors[i].y >= 0))
+					&& (neighbors[i].x < data.width && neighbors[i].x >= 0 && neighbors[i].y < data.height && neighbors[i].y >= 0)) //Not outside the map
 				{
 					cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
 					frontier.Push(neighbors[i], new_cost);
 					breadcrumbs.add(curr);
 					visited.add(neighbors[i]); // add here just to print?
 					if (neighbors[i] == goal) {
-						stop_dijkstra = true;
+						stop_pathfinding = true;
 						//iPoint goal_world = MapToWorld(goal.x,goal.y);
 						//Path(goal_world.x - App->render->camera.x, goal_world.y - App->render->camera.y);
 						Path(goal.x, goal.y, false);
@@ -169,9 +169,9 @@ int j1Map::MovementCost(int x, int y) const
 		int id = data.layers.start->next->data->Get(x, y);
 
 		if (id == 0)
-			ret = 3;
+			ret = 1;
 		else
-			ret = 0;
+			ret = 20;
 	}
 
 	return ret;

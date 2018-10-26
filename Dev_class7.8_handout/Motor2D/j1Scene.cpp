@@ -63,7 +63,7 @@ bool j1Scene::Update(float dt)
 		App->render->camera.x -= 1;
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) {
-		App->map->stop_dijkstra = false;
+		App->map->stop_pathfinding = false;
 		App->map->ResetPath();
 	}
 
