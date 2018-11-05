@@ -176,27 +176,46 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 		// TODO 2: Create two lists: open, close
 		// Add the origin tile to open
 		// Iterate while we have tile in the open list
-		int g = 0, h = SquareRootDistance(origin,destination);
+		int g = 0, h = origin.DistanceTo(destination);
 		
 		PathNode curr(g, h, origin, nullptr);
 		open.list.add(curr);
 
-		
+		PathList neighbours;
+
 		while (p2List_item<PathNode>* item = open.GetNodeLowestScore()) {
 			// TODO 3: Move the lowest score cell from open list to the closed list
-			open.list.del(item);
-			closed.list.add(item->data);
+			const PathNode* parent = item->data.parent;
+			curr = item->data;
 
+			closed.list.add(curr);
 			
+			
+			
+			open.list.del(item);
+			
+			
+			uint neighbours_size = curr.FindWalkableAdjacents(neighbours);
+
+			for (uint i = 0u; i < neighbours_size; i++) {
+				neighbours.list[i].CalculateF(destination);
+				open.list.add(neighbours.list[i]);
+				if (neighbours.list[i].pos == destination) {
+					//closed.list.add(neighbours.list[i]);
+					break;
+				}
+			}
+
+
 
 			// TODO 4: If we just added the destination, we are done!
 			// Backtrack to create the final path
 			// Use the Pathnode::parent and Flip() the path when you are finish
-			if (item->data.pos == destination) {
+			if (curr.pos == destination) {
 				last_path.Clear();
-
-				for (PathNode item_path = closed.list.start->data; item_path.pos != origin; item_path= *item_path.parent) {
-					last_path.PushBack(item_path.pos);
+				
+				for (p2List_item<PathNode>* item_path = closed.list.end; item_path->data.parent != nullptr; item_path->data = *item_path->data.parent) {
+					last_path.PushBack(item_path->data.pos);
 				}
 				
 				last_path.Flip();
@@ -210,8 +229,11 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 			// If it is NOT found, calculate its F and add it to the open list
 			// If it is already in the open list, check if it is a better path (compare G)
 			// If it is a better path, Update the parent
+
+			neighbours.list.clear();
 		}
 	}
+
 }
 
 int j1PathFinding::SquareRootDistance(iPoint from, iPoint to) {
