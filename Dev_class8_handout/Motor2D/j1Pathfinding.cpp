@@ -112,6 +112,8 @@ PathNode::PathNode(int g, int h, const iPoint& pos, const PathNode* parent) : g(
 PathNode::PathNode(const PathNode& node) : g(node.g), h(node.h), pos(node.pos), parent(node.parent)
 {}
 
+
+
 // PathNode -------------------------------------------------------------------------
 // Fills a list (PathList) of all valid adjacent pathnodes
 // ----------------------------------------------------------------------------------
@@ -185,7 +187,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 
 		while (p2List_item<PathNode>* item = open.GetNodeLowestScore()) {
 			// TODO 3: Move the lowest score cell from open list to the closed list
-			const PathNode* parent = item->data.parent;
+			//const PathNode* parent = new PathNode(item->)
 			curr = item->data;
 
 			closed.list.add(curr);
@@ -198,8 +200,25 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 			uint neighbours_size = curr.FindWalkableAdjacents(neighbours);
 
 			for (uint i = 0u; i < neighbours_size; i++) {
-				neighbours.list[i].CalculateF(destination);
-				open.list.add(neighbours.list[i]);
+
+				if (closed.list.find(neighbours.list[i]) != -1) continue;
+
+				if (int open_pos = open.list.find(neighbours.list[i]) != -1) {
+
+					neighbours.list[i].CalculateF(destination);
+					open.list.add(neighbours.list[i]);
+
+				}
+				else
+				{
+					if (open.list[open_pos].g > neighbours.list[i].g) {
+						open.list[open_pos].parent = neighbours.list[i].parent;
+					}
+
+
+				}
+					
+				
 				if (neighbours.list[i].pos == destination) {
 					//closed.list.add(neighbours.list[i]);
 					break;
