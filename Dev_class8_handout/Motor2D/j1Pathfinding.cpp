@@ -178,6 +178,10 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 		// TODO 2: Create two lists: open, close
 		// Add the origin tile to open
 		// Iterate while we have tile in the open list
+
+		open.list.clear();
+		closed.list.clear();
+
 		int g = 0, h = origin.DistanceTo(destination);
 		
 		PathNode curr(g, h, origin, nullptr);
@@ -202,18 +206,18 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 			
 			uint neighbours_size = closed.list.end->data.FindWalkableAdjacents(neighbours);
 
-			for (neighbours_last_size; neighbours_last_size < neighbours_size; neighbours_last_size++) {
+			for (int i = 0; i < neighbours_size; i++) {
 
 				//if (closed.list.find(neighbours.list[i]) != -1) continue;
 
-				if (closed.Find(neighbours.list[neighbours_last_size].pos) != NULL) continue;
+				if (closed.Find(neighbours.list[i].pos) != NULL) continue;
 
-				const p2List_item<PathNode>* repeated_node = open.Find(neighbours.list[neighbours_last_size].pos);
+				const p2List_item<PathNode>* repeated_node = open.Find(neighbours.list[i].pos);
 
 				if (repeated_node == NULL) {
 
-					neighbours.list[neighbours_last_size].CalculateF(destination);
-					open.list.add(neighbours.list[neighbours_last_size]);
+					neighbours.list[i].CalculateF(destination);
+					open.list.add(neighbours.list[i]);
 				}else
 				{
 					//if (repeated_node->data.g > neighbours.list[i].g) {
@@ -245,7 +249,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 				}*/
 					
 				
-				if (neighbours.list[neighbours_last_size].pos == destination) {
+				if (neighbours.list[i].pos == destination) {
 					//closed.list.add(neighbours.list[i]);
 					break;
 				}
@@ -276,7 +280,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 			// If it is already in the open list, check if it is a better path (compare G)
 			// If it is a better path, Update the parent
 
-			//neighbours.list.clear();
+			neighbours.list.clear();
 		}
 	}
 
