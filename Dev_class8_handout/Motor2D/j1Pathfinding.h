@@ -39,6 +39,15 @@ struct PathNode
 	iPoint pos;
 	const PathNode* parent; // needed to reconstruct the path in the end
 
+	PathNode& operator =(const PathNode& node) {
+		g = node.g;
+		h = node.h;
+		pos = node.pos;
+		parent = node.parent;
+
+		return *this;
+	}
+
 };
 
 // ---------------------------------------------------------------------
