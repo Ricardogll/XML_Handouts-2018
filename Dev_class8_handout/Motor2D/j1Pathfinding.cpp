@@ -201,9 +201,32 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 
 			for (uint i = 0u; i < neighbours_size; i++) {
 
-				if (closed.list.find(neighbours.list[i]) != -1) continue;
+				//if (closed.list.find(neighbours.list[i]) != -1) continue;
 
-				if (int open_pos = open.list.find(neighbours.list[i]) != -1) {
+				if (closed.Find(neighbours.list[i].pos) != NULL) continue;
+
+				const p2List_item<PathNode>* repeated_node = open.Find(neighbours.list[i].pos);
+
+				if (repeated_node != NULL) {
+
+					neighbours.list[i].CalculateF(destination);
+					open.list.add(neighbours.list[i]);
+				}else
+				{
+					//if (repeated_node->data.g > neighbours.list[i].g) {
+						
+						//open.list[open.list.find(repeated_node->data)].parent = neighbours.list[i].parent;
+						
+						//repeated_node->data.parent = neighbours.list[i].parent;
+					//}
+
+				}
+
+
+
+				/*open_pos = open.list.find(neighbours.list[i]);
+
+				if (open_pos != -1) {
 
 					neighbours.list[i].CalculateF(destination);
 					open.list.add(neighbours.list[i]);
@@ -216,7 +239,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 					}
 
 
-				}
+				}*/
 					
 				
 				if (neighbours.list[i].pos == destination) {
