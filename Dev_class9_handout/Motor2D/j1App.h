@@ -102,7 +102,17 @@ private:
 	bool				want_to_load = false;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+	
+	//Timers
 	j1Timer timer;
+	j1PerfTimer p_timer;
+	j1Timer timer_last_frame;
+	uint64 frames = 0u;
+	uint frames_last_sec_aux = 0u;
+	uint64 timer_1sec_aux = 0u;
+	uint32 frames_on_last_update = 0u;
+	uint32 last_frame_time = 0u;
+	uint32 current_frame_time = 0u;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

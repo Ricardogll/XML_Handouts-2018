@@ -21,8 +21,9 @@
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
+	timer.Start();
+	p_timer.Start();
 	
-
 	input = new j1Input();
 	win = new j1Window();
 	render = new j1Render();
@@ -44,8 +45,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	// render last to swap buffer
 	AddModule(render);
-
-	LOG("j1App::Awake took: %f", timer.Read(), " ms");
+	
+	LOG("j1App::Constructor took: %f ms", p_timer.ReadMs());
 }
 
 // Destructor
@@ -72,6 +73,8 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
+	p_timer.Start();
+
 	pugi::xml_document	config_file;
 	pugi::xml_node		config;
 	pugi::xml_node		app_config;
@@ -96,26 +99,35 @@ bool j1App::Awake()
 
 		while(item != NULL && ret == true)
 		{
+			item->data->p_timer.Start();
 			ret = item->data->Awake(config.child(item->data->name.GetString()));
+			LOG("Module: %s Awake took: %f ms", item->data->name.GetString(), item->data->p_timer.ReadMs());
 			item = item->next;
+			
 		}
 	}
-
+	LOG("j1App::Awake took: %f ms", p_timer.ReadMs());
 	return ret;
 }
 
 // Called before the first frame
 bool j1App::Start()
 {
+	p_timer.Start();
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
 
 	while(item != NULL && ret == true)
 	{
+		item->data->p_timer.Start();
 		ret = item->data->Start();
+		LOG("Module: %s Start took: %f ms", item->data->name.GetString(), item->data->p_timer.ReadMs());
 		item = item->next;
 	}
+
+	LOG("j1App::Start took: %f ms", p_timer.ReadMs());
 	return ret;
 }
 
@@ -159,6 +171,19 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	frames++;
+	frames_last_sec_aux++;
+	timer_last_frame.Start();
+
+	if (int(timer.Read() - timer_1sec_aux) >= 1000) {
+		
+		frames_on_last_update = frames_last_sec_aux;
+		frames_last_sec_aux = 0;
+		timer_1sec_aux = timer.Read();
+
+	}
+
+	current_frame_time = timer.Read();
 }
 
 // ---------------------------------------------
@@ -177,18 +202,19 @@ void j1App::FinishUpdate()
 	// Amount of ms took the last update
 	// Amount of frames during the last second
 
-	float avg_fps = 0.0f;
-	float seconds_since_startup = 0.0f;
-	float dt = 0.0f;
-	uint32 last_frame_ms = 0;
-	uint32 frames_on_last_update = 0;
-	uint64 frame_count = 0;
+	float seconds_since_startup = timer.ReadSec();
+	float avg_fps = frames / seconds_since_startup;
+	float dt = float((timer.Read() - current_frame_time)/1000.0f);
+	uint32 last_frame_ms = timer_last_frame.Read();
+	
+	uint64 frame_count = frames;
 
 	static char title[256];
 	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
 			  avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
 
 	App->win->SetTitle(title);
+	
 }
 
 // Call modules before each loop iteration
@@ -259,6 +285,8 @@ bool j1App::PostUpdate()
 // Called before quitting
 bool j1App::CleanUp()
 {
+	p_timer.Start();
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.end;
@@ -268,6 +296,9 @@ bool j1App::CleanUp()
 		ret = item->data->CleanUp();
 		item = item->prev;
 	}
+
+	LOG("j1App::CleanUp took: %f ms", p_timer.ReadMs());
+
 	return ret;
 }
 

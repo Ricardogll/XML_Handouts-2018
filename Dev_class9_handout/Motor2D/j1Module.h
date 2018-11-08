@@ -7,6 +7,7 @@
 #define __j1MODULE_H__
 
 #include "p2SString.h"
+#include "j1PerfTimer.h"
 #include "PugiXml\src\pugixml.hpp"
 
 class j1App;
@@ -76,7 +77,7 @@ public:
 
 	p2SString	name;
 	bool		active;
-
+	j1PerfTimer p_timer;
 };
 
 #endif // __j1MODULE_H__
