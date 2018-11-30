@@ -50,16 +50,16 @@
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
     <ClCompile Include="UIElement.cpp">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClCompile>
     <ClCompile Include="UILabel.cpp">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClCompile>
     <ClCompile Include="UIImage.cpp">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClCompile>
     <ClCompile Include="UIImageNoAtlas.cpp">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,16 +130,16 @@
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
     <ClInclude Include="UIElement.h">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClInclude>
     <ClInclude Include="UILabel.h">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIImage.h">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIImageNoAtlas.h">
-      <Filter>Desenvolupament  ========\UI</Filter>
+      <Filter>Desenvolupament  ========\Modules\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,7 +161,7 @@
     <Filter Include="Desenvolupament  ========\Tools\PuguiXML">
       <UniqueIdentifier>{7cb78d67-17cc-45eb-af97-e2106becce7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Desenvolupament  ========\UI">
+    <Filter Include="Desenvolupament  ========\Modules\UI">
       <UniqueIdentifier>{711dd5ee-372d-450f-83e3-743c1a3decc3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

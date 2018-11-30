@@ -48,7 +48,32 @@ bool j1Gui::PreUpdate()
 
 bool j1Gui::Update(float dt)
 {
+	int mouse_x = 0, mouse_y = 0;
+	MouseState mouse_click = MouseState::NONE;
 
+	switch (App->input->GetMouseButtonDown(1)) {
+
+	case j1KeyState::KEY_DOWN:
+		mouse_click = MouseState::DOWN_CLICK;
+		break;
+
+	case j1KeyState::KEY_REPEAT:
+		mouse_click = MouseState::REPEAT_CLICK;
+		break;
+
+	case j1KeyState::KEY_UP:
+		mouse_click = MouseState::UP_CLICK;
+		break;
+
+	}
+
+	App->input->GetMousePosition(mouse_x, mouse_y);
+	
+	for (uint i = 0u; i < ui_elements.Count(); i++) {
+		if (ui_elements[i] != nullptr) {
+			ui_elements[i]->CheckMouseState(mouse_x,mouse_y, mouse_click);
+		}
+	}
 
 
 
@@ -104,7 +129,7 @@ UIElement* j1Gui::CreateLabel(int x, int y, const char* text, int size, SDL_Colo
 	ui_elements.PushBack(aux);
 
 
-	return nullptr;
+	return aux;
 }
 
 UIElement * j1Gui::CreateImage(int x, int y, SDL_Rect rect)
@@ -113,7 +138,7 @@ UIElement * j1Gui::CreateImage(int x, int y, SDL_Rect rect)
 	UIElement* aux = new UIImage(x, y, rect);
 	ui_elements.PushBack(aux);
 
-	return nullptr;
+	return aux;
 }
 
 UIElement* j1Gui::CreateImageNoAtlas(int x, int y, SDL_Rect rect, SDL_Texture* tex) {
@@ -121,7 +146,7 @@ UIElement* j1Gui::CreateImageNoAtlas(int x, int y, SDL_Rect rect, SDL_Texture* t
 	UIElement* aux = new UIImageNoAtlas(x, y, rect, tex);
 	ui_elements.PushBack(aux);
 
-	return nullptr;
+	return aux;
 }
 
 

@@ -6,7 +6,7 @@
 UIImage::UIImage(int x, int y, SDL_Rect rect):UIElement(x,y,IMAGE)
 {
 	img_rect = rect;
-	
+	rect = { x,y,rect.w,rect.h };
 }
 
 UIImage::~UIImage()

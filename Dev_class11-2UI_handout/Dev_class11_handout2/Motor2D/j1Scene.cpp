@@ -46,17 +46,14 @@ bool j1Scene::Start()
 
 	debug_tex = App->tex->Load("maps/path2.png");
 
-	//App->font->Load(DEFAULT_FONT, 12);
-	//aaa = App->font->Print("aaa");
 	
-	//label = new UILabel(10, 10, "HelloWorld");
-	ui_el2 = App->gui->CreateImage(30, 10, { 485, 829, 328, 103 });
-	ui_el = App->gui->CreateLabel(10, 0, "HelloWorld");
+	ui_el2 = App->gui->CreateImage(30, 10, { 648, 173, 221, 64 }); //417,170click  -  6, 114hover
+	ui_el = App->gui->CreateLabel(10, 0, "HelloWorld", 16, { 255,0,0,255 }, "fonts/open_sans/OpenSans-Light.ttf");
 	
-	ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
+	/*ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
 	ui_el4 = App->gui->CreateLabel(10, 10, "WoW Font", 16, { 255,0,0,255 }, "fonts/open_sans/OpenSans-Light.ttf");
-	ui_el5 = App->gui->CreateLabel(10, 25, "WoW Font", 20, { 0,255,0,255 }, "fonts/open_sans/OpenSans-SemiboldItalic.ttf");
-	// TODO 3: Create the banner (rect {485, 829, 328, 103}) and the text "Hello World"
+	ui_el5 = App->gui->CreateLabel(10, 25, "WoW Font", 20, { 0,255,0,255 }, "fonts/open_sans/OpenSans-SemiboldItalic.ttf");*/
+	
 
 	return true;
 }
@@ -145,7 +142,51 @@ bool j1Scene::Update(float dt)
 		App->render->Blit(debug_tex, pos.x, pos.y);
 	}
 
+	//HACER UN IF CLICK "X" PUNTO DE DEBUG Y MIRAR QUE PASA AL HACER HOVER
+
 	
+	if (ui_el!=nullptr) {
+		//switch
+
+		switch (ui_el->mouse_state) {
+
+		case MouseState::ON_ENTER:
+			ui_el->SetText("Hovering");
+			break;
+
+		case MouseState::ON_LEAVE:
+			ui_el->SetText("HelloWorld");
+			break;
+
+		case MouseState::DOWN_CLICK:
+			ui_el->SetText("Clicking");
+			break;
+
+		}
+
+
+	}
+
+	if (ui_el2 != nullptr) {
+
+		if (ui_el2->mouse_state == MouseState::NONE) {
+			//ui_el2->SetText("HelloWorld");
+			
+			
+		}
+
+		if (ui_el2->mouse_state == MouseState::HOVERING) {
+			//ui_el2->SetText("Hovering");
+			ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
+		}
+
+		if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
+			//ui_el2->SetText("Clicking");
+			ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
+
+		}
+
+	}
 
 	return true;
 }
