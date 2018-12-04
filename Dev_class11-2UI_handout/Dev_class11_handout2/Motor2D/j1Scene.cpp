@@ -47,7 +47,7 @@ bool j1Scene::Start()
 	debug_tex = App->tex->Load("maps/path2.png");
 
 	
-	ui_el2 = App->gui->CreateImage(30, 10, { 648, 173, 221, 64 }); //417,170click  -  6, 114hover
+	//ui_el2 = App->gui->CreateImage(30, 10, { 648, 173, 221, 64 }); //417,170click  -  6, 114hover
 	ui_el = App->gui->CreateLabel(10, 0, "HelloWorld", 16, { 255,0,0,255 }, "fonts/open_sans/OpenSans-Light.ttf");
 	
 	/*ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
@@ -92,24 +92,24 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	// Gui ---
-	
+
 	// -------
-	if(App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		App->render->camera.y += floor(200.0f * dt);
 
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 		App->render->camera.y -= floor(200.0f * dt);
 
-	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		App->render->camera.x += floor(200.0f * dt);
 
-	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x -= floor(200.0f * dt);
 
 	App->map->Draw();
@@ -118,10 +118,10 @@ bool j1Scene::Update(float dt)
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d",
-					App->map->data.width, App->map->data.height,
-					App->map->data.tile_width, App->map->data.tile_height,
-					App->map->data.tilesets.count(),
-					map_coordinates.x, map_coordinates.y);
+		App->map->data.width, App->map->data.height,
+		App->map->data.tile_width, App->map->data.tile_height,
+		App->map->data.tilesets.count(),
+		map_coordinates.x, map_coordinates.y);
 
 	//App->win->SetTitle(title.GetString());
 
@@ -136,7 +136,7 @@ bool j1Scene::Update(float dt)
 
 	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 
-	for(uint i = 0; i < path->Count(); ++i)
+	for (uint i = 0; i < path->Count(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path->At(i)->x, path->At(i)->y);
 		App->render->Blit(debug_tex, pos.x, pos.y);
@@ -144,22 +144,27 @@ bool j1Scene::Update(float dt)
 
 	//HACER UN IF CLICK "X" PUNTO DE DEBUG Y MIRAR QUE PASA AL HACER HOVER
 
-	
-	if (ui_el!=nullptr) {
+
+
+
+	if (ui_el != nullptr) {
 		//switch
 
 		switch (ui_el->mouse_state) {
 
 		case MouseState::ON_ENTER:
 			ui_el->SetText("Hovering");
+			LOG("SETTING TEXT HOVER");
 			break;
 
 		case MouseState::ON_LEAVE:
 			ui_el->SetText("HelloWorld");
+			LOG("SETTING TEXT LEAVE");
 			break;
 
 		case MouseState::DOWN_CLICK:
 			ui_el->SetText("Clicking");
+			LOG("SETTING TEXT CLICK");
 			break;
 
 		}
@@ -167,26 +172,26 @@ bool j1Scene::Update(float dt)
 
 	}
 
-	if (ui_el2 != nullptr) {
+	//	if (ui_el2 != nullptr) {
 
-		if (ui_el2->mouse_state == MouseState::NONE) {
-			//ui_el2->SetText("HelloWorld");
-			
-			
-		}
+	//		if (ui_el2->mouse_state == MouseState::NONE) {
+	//			//ui_el2->SetText("HelloWorld");
 
-		if (ui_el2->mouse_state == MouseState::HOVERING) {
-			//ui_el2->SetText("Hovering");
-			ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
-		}
 
-		if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
-			//ui_el2->SetText("Clicking");
-			ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
+	//		}
 
-		}
+	//		if (ui_el2->mouse_state == MouseState::HOVERING) {
+	//			//ui_el2->SetText("Hovering");
+	//			ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
+	//		}
 
-	}
+	//		if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
+	//			//ui_el2->SetText("Clicking");
+	//			ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
+
+	//		}
+
+	//	}
 
 	return true;
 }
