@@ -47,12 +47,11 @@ bool j1Scene::Start()
 	debug_tex = App->tex->Load("maps/path2.png");
 
 	
-	//ui_el2 = App->gui->CreateImage(30, 10, { 648, 173, 221, 64 }); //417,170click  -  6, 114hover
-	ui_el = App->gui->CreateLabel(10, 0, "HelloWorld", 16, { 255,0,0,255 }, "fonts/open_sans/OpenSans-Light.ttf");
-	
-	/*ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
-	ui_el4 = App->gui->CreateLabel(10, 10, "WoW Font", 16, { 255,0,0,255 }, "fonts/open_sans/OpenSans-Light.ttf");
-	ui_el5 = App->gui->CreateLabel(10, 25, "WoW Font", 20, { 0,255,0,255 }, "fonts/open_sans/OpenSans-SemiboldItalic.ttf");*/
+	ui_el2 = App->gui->CreateImage(30, 10, { 648, 173, 221, 64 }); //417,170click  -  6, 114hover
+	ui_el = App->gui->CreateLabel(10, 0, "HelloWorld", 16, { 255,0,0,255 });
+	ui_el4 = App->gui->CreateButton(200, 20,  { 642,169,229,69 }, { 0,113,229,69 }, { 411,169,229,69 });
+	ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
+	ui_el5 = App->gui->CreateLabel(10, 25, "Other Font", 20, { 0,255,0,255 }, "fonts/open_sans/OpenSans-SemiboldItalic.ttf");
 	
 
 	return true;
@@ -172,26 +171,26 @@ bool j1Scene::Update(float dt)
 
 	}
 
-	//	if (ui_el2 != nullptr) {
+		if (ui_el2 != nullptr) {
 
-	//		if (ui_el2->mouse_state == MouseState::NONE) {
-	//			//ui_el2->SetText("HelloWorld");
+			if (ui_el2->mouse_state == MouseState::NONE) {
+				//ui_el2->SetText("HelloWorld");
 
 
-	//		}
+			}
 
-	//		if (ui_el2->mouse_state == MouseState::HOVERING) {
-	//			//ui_el2->SetText("Hovering");
-	//			ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
-	//		}
+			if (ui_el2->mouse_state == MouseState::HOVERING) {
+				//ui_el2->SetText("Hovering");
+				ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
+			}
 
-	//		if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
-	//			//ui_el2->SetText("Clicking");
-	//			ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
+			if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
+				//ui_el2->SetText("Clicking");
+				ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
 
-	//		}
+			}
 
-	//	}
+		}
 
 	return true;
 }

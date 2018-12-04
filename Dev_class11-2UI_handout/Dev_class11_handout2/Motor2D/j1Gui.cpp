@@ -8,6 +8,7 @@
 #include "j1Gui.h"
 #include "UIImage.h"
 #include "UILabel.h"
+#include "UIButton.h"
 #include"UIImageNoAtlas.h"
 
 
@@ -72,6 +73,7 @@ bool j1Gui::Update(float dt)
 	for (uint i = 0u; i < ui_elements.Count(); i++) {
 		if (ui_elements[i] != nullptr) {
 			ui_elements[i]->CheckMouseState(mouse_x,mouse_y, mouse_click);
+			ui_elements[i]->Update();
 		}
 	}
 
@@ -144,6 +146,14 @@ UIElement * j1Gui::CreateImage(int x, int y, SDL_Rect rect)
 UIElement* j1Gui::CreateImageNoAtlas(int x, int y, SDL_Rect rect, SDL_Texture* tex) {
 
 	UIElement* aux = new UIImageNoAtlas(x, y, rect, tex);
+	ui_elements.PushBack(aux);
+
+	return aux;
+}
+
+UIElement * j1Gui::CreateButton(int x, int y, SDL_Rect rect, SDL_Rect hovering, SDL_Rect clicked)
+{
+	UIElement* aux = new UIButton(x, y, rect, hovering, clicked);
 	ui_elements.PushBack(aux);
 
 	return aux;
