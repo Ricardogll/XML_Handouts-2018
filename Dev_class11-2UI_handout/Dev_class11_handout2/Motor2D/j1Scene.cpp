@@ -171,26 +171,26 @@ bool j1Scene::Update(float dt)
 
 	}
 
-		if (ui_el2 != nullptr) {
+		//if (ui_el2 != nullptr) {
 
-			if (ui_el2->mouse_state == MouseState::NONE) {
-				//ui_el2->SetText("HelloWorld");
+		//	if (ui_el2->mouse_state == MouseState::NONE) {
+		//		//ui_el2->SetText("HelloWorld");
+		//		ui_el2->img_rect = { 648, 173, 221, 64 };
 
+		//	}
 
-			}
+		//	if (ui_el2->mouse_state == MouseState::HOVERING) {
+		//		//ui_el2->SetText("Hovering");
+		//		ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
+		//	}
 
-			if (ui_el2->mouse_state == MouseState::HOVERING) {
-				//ui_el2->SetText("Hovering");
-				ui_el2->img_rect = { 6, 114, 221, 64 }; //417,170click -  6, 114hover
-			}
+		//	if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
+		//		//ui_el2->SetText("Clicking");
+		//		ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
 
-			if (ui_el2->mouse_state == MouseState::REPEAT_CLICK) {
-				//ui_el2->SetText("Clicking");
-				ui_el2->img_rect = { 417, 170, 221, 64 }; //417,170click -  6, 114hover
+		//	}
 
-			}
-
-		}
+		//}
 
 	return true;
 }

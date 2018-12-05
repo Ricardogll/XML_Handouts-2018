@@ -11,6 +11,7 @@ UIButton::UIButton(int x, int y, SDL_Rect rect, SDL_Rect hovering, SDL_Rect clic
 	hovering_rect = hovering;
 	clicked_rect = clicked;
 	this->rect = { x,y,rect.w,rect.h };
+	
 }
 
 UIButton::~UIButton()

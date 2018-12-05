@@ -29,7 +29,8 @@ public:
 	//SDL_Rect rect;
 	UIType type = NONE_UI;
 	SDL_Rect rect = { 0,0,0,0 };
-	bool clickable=false;
+	bool clickable = false;
+	bool draggable = false;
 	MouseState mouse_state = MouseState::NONE;
 	MouseState prev_mouse_state = MouseState::NONE;
 	int pos_x = 0;
@@ -38,7 +39,8 @@ public:
 	SDL_Rect img_rect = { 0,0,0,0 };
 	const char* text;
 	_TTF_Font* current_font;
-
+	UIElement* parent;
+	iPoint mouse_drag = { 0,0 };
 
 
 
@@ -51,7 +53,7 @@ public:
 	virtual void Start();
 	virtual void Draw(SDL_Texture* texture);
 	virtual void Update();
-	MouseState CheckMouseState(int mouse_x, int mouse_y, MouseState mouse_click);//change this for a general method on gui that checks if there is an element under the mouse?
+	MouseState CheckMouseState(int mouse_x, int mouse_y, MouseState mouse_click);
 	virtual void SetText(const char * text);
 
 };

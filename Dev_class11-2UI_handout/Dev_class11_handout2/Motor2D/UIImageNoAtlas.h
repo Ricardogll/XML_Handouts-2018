@@ -12,7 +12,7 @@ public:
 	void Draw(SDL_Texture* atlas);
 
 private:
-	SDL_Rect img_rect;
+	//SDL_Rect img_rect;
 };
 
 #endif // !_UILABEL__
