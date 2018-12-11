@@ -3,10 +3,10 @@
 #include "j1Render.h"
 #include "j1Gui.h"
 
-UIImage::UIImage(int x, int y, SDL_Rect rect):UIElement(x,y,IMAGE)
+UIImage::UIImage(int x, int y, SDL_Rect rect, UIElement* parent):UIElement(x,y,IMAGE, parent)
 {
 	img_rect = rect;
-	this->rect = { x,y,rect.w,rect.h };
+	this->rect = { world_pos_x,world_pos_y,rect.w,rect.h };
 }
 
 UIImage::~UIImage()
@@ -15,6 +15,6 @@ UIImage::~UIImage()
 
 void UIImage::Draw(SDL_Texture* atlas) {
 
-	App->render->Blit(atlas, pos_x, pos_y, &img_rect);
+	App->render->Blit(atlas, world_pos_x, world_pos_y, &img_rect);
 
 }

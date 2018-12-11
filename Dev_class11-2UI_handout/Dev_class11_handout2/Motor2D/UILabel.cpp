@@ -10,8 +10,8 @@ UILabel::UILabel(int x, int y, const char* text, int size, SDL_Color color, cons
 	
 	this->text = text;
 	this->color = color;
-	rect.x = x;
-	rect.y = y;
+	rect.x = world_pos_x;
+	rect.y = world_pos_y;
 	
 
 	_TTF_Font* newFont = App->font->Load(font, size);
@@ -32,7 +32,7 @@ UILabel::~UILabel()
 
 void UILabel::Draw(SDL_Texture* atlas) {
 
-	App->render->Blit(texture, pos_x, pos_y);
+	App->render->Blit(texture, world_pos_x, world_pos_y);
 
 }
 

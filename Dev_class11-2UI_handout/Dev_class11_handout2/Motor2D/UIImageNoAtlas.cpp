@@ -16,6 +16,6 @@ UIImageNoAtlas::~UIImageNoAtlas()
 
 void UIImageNoAtlas::Draw(SDL_Texture* atlas) {
 
-	App->render->Blit(texture, pos_x, pos_y);
+	App->render->Blit(texture, local_pos_x, local_pos_y);
 
 }

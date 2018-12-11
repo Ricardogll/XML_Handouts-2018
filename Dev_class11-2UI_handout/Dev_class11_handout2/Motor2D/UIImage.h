@@ -7,7 +7,7 @@
 class UIImage : public UIElement {
 
 public:
-	UIImage(int x, int y, SDL_Rect rect);
+	UIImage(int x, int y, SDL_Rect rect, UIElement* parent);
 	~UIImage();
 	void Draw(SDL_Texture* atlas);
 

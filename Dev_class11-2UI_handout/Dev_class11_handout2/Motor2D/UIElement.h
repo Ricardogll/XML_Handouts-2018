@@ -33,20 +33,24 @@ public:
 	bool draggable = false;
 	MouseState mouse_state = MouseState::NONE;
 	MouseState prev_mouse_state = MouseState::NONE;
-	int pos_x = 0;
-	int pos_y = 0;
+	iPoint prev_mouse = { 0,0 };
+	int local_pos_x = 0;
+	int local_pos_y = 0;
+	int world_pos_x = 0;
+	int world_pos_y = 0;
+
 	SDL_Texture* texture;
 	SDL_Rect img_rect = { 0,0,0,0 };
 	const char* text;
 	_TTF_Font* current_font;
-	UIElement* parent;
+	UIElement* parent=nullptr;
 	iPoint mouse_drag = { 0,0 };
 
 
 
 public:
 	UIElement() {};
-	UIElement(int x, int y, UIType type);
+	UIElement(int x, int y, UIType type, UIElement* parent = nullptr);
 
 	virtual ~UIElement();
 
@@ -55,6 +59,8 @@ public:
 	virtual void Update();
 	MouseState CheckMouseState(int mouse_x, int mouse_y, MouseState mouse_click);
 	virtual void SetText(const char * text);
+	
+	
 
 };
 

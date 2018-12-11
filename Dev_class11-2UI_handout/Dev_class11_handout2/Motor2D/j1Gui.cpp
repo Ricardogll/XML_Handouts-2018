@@ -134,10 +134,10 @@ UIElement* j1Gui::CreateLabel(int x, int y, const char* text, int size, SDL_Colo
 	return aux;
 }
 
-UIElement * j1Gui::CreateImage(int x, int y, SDL_Rect rect)
+UIElement * j1Gui::CreateImage(int x, int y, SDL_Rect rect, UIElement* parent)
 {
 
-	UIElement* aux = new UIImage(x, y, rect);
+	UIElement* aux = new UIImage(x, y, rect, parent);
 	ui_elements.PushBack(aux);
 
 	return aux;

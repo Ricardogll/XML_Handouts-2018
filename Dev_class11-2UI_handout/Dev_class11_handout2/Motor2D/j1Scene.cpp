@@ -47,12 +47,12 @@ bool j1Scene::Start()
 	debug_tex = App->tex->Load("maps/path2.png");
 
 	
-	ui_el2 = App->gui->CreateImage(30, 10, { 648, 173, 221, 64 }); //417,170click  -  6, 114hover
-	ui_el = App->gui->CreateLabel(10, 0, "HelloWorld", 16, { 255,0,0,255 });
-	ui_el4 = App->gui->CreateButton(200, 20,  { 642,169,229,69 }, { 0,113,229,69 }, { 411,169,229,69 });
-	ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
-	ui_el5 = App->gui->CreateLabel(10, 25, "Other Font", 20, { 0,255,0,255 }, "fonts/open_sans/OpenSans-SemiboldItalic.ttf");
 	
+	ui_el = App->gui->CreateLabel(100, 100, "HelloWorld", 16, { 255,0,0,255 });
+	/*ui_el4 = App->gui->CreateButton(200, 20,  { 642,169,229,69 }, { 0,113,229,69 }, { 411,169,229,69 });
+	ui_el3 = App->gui->CreateImageNoAtlas(500, 0, { 0,0,100,100 }, App->gui->not_atlas_ui);
+	ui_el5 = App->gui->CreateLabel(10, 25, "Other Font", 20, { 0,255,0,255 }, "fonts/open_sans/OpenSans-SemiboldItalic.ttf");*/
+	ui_el2 = App->gui->CreateImage(10, 10, { 648, 173, 221, 64 }, ui_el);
 
 	return true;
 }
@@ -141,13 +141,11 @@ bool j1Scene::Update(float dt)
 		App->render->Blit(debug_tex, pos.x, pos.y);
 	}
 
-	//HACER UN IF CLICK "X" PUNTO DE DEBUG Y MIRAR QUE PASA AL HACER HOVER
 
 
 
-
-	if (ui_el != nullptr) {
-		//switch
+	/*if (ui_el != nullptr) {
+		
 
 		switch (ui_el->mouse_state) {
 
@@ -169,7 +167,7 @@ bool j1Scene::Update(float dt)
 		}
 
 
-	}
+	}*/
 
 		//if (ui_el2 != nullptr) {
 

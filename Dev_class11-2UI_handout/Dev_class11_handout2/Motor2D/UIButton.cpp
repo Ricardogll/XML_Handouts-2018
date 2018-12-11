@@ -45,7 +45,7 @@ void UIButton::Update() {
 
 void UIButton::Draw(SDL_Texture* atlas) {
 
-	App->render->Blit(atlas, pos_x, pos_y, &img_rect);
+	App->render->Blit(atlas, local_pos_x, local_pos_y, &img_rect);
 
 }
 

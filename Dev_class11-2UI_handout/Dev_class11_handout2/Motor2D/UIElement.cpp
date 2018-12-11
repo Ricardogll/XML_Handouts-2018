@@ -5,10 +5,20 @@
 #include "p2Log.h"
 #include "j1Render.h"
 
-UIElement::UIElement(int x, int y, UIType type) : pos_x(x), pos_y(y), type(type)
+UIElement::UIElement(int x, int y, UIType type, UIElement* parent) : local_pos_x(x), local_pos_y(y), type(type), parent(parent)
 {
 	clickable = true;
 	draggable = true;
+
+	if (parent != nullptr) {
+		world_pos_x = local_pos_x + parent->world_pos_x;
+		world_pos_y = local_pos_y + parent->world_pos_y;
+	}
+	else {
+		world_pos_x = local_pos_x;
+		world_pos_y = local_pos_y;
+	}
+
 }
 
 UIElement::~UIElement()
@@ -26,18 +36,37 @@ void UIElement::Draw(SDL_Texture* texture)
 
 void UIElement::Update()
 {
-	
+	iPoint mouse_pos_aux;
+	App->input->GetMousePosition(mouse_pos_aux.x, mouse_pos_aux.y);
+
 	if (mouse_state == MouseState::REPEAT_CLICK && draggable) {
 
-		iPoint mouse_aux;//SEGUIR AQUI, MIRAR COMO LA CAMARA MUEVE LA POSICION DEL MOUSE PARA ARRASTRAR BIEN
-		App->input->GetMousePosition(mouse_aux.x, mouse_aux.y);
-		iPoint cam = {App->render->camera.x, App->render->camera.y};
-		pos_x += mouse_aux.x-mouse_drag.x+cam.x;
-		pos_y += mouse_aux.y - mouse_drag.y+cam.y;
+		if (prev_mouse != mouse_pos_aux) {
+			//iPoint mouse_motion;
+			//App->input->GetMouseMotion(mouse_motion.x, mouse_motion.y);
+			local_pos_x += mouse_pos_aux.x - prev_mouse.x;
+			local_pos_y += mouse_pos_aux.y - prev_mouse.y;
+			world_pos_x += mouse_pos_aux.x - prev_mouse.x;
+			world_pos_y += mouse_pos_aux.y - prev_mouse.y;
+			//LOG("MouseMotion: %i, %i", mouse_motion.x, mouse_motion.y);
+		}
 
-		LOG("MouseMotion %i, %i. MousePos %i, %i", mouse_aux.x - mouse_drag.x, mouse_aux.y - mouse_drag.y, mouse_aux.x, mouse_aux.y);
-		mouse_drag = { pos_x,pos_y };
 	}
+
+	
+	if (parent == nullptr) {//maybe more useful the other way around? check when more developed
+		world_pos_x = local_pos_x;
+		world_pos_y = local_pos_y;
+	}
+	else
+	{
+		world_pos_x = local_pos_x+parent->world_pos_x;
+		world_pos_y = local_pos_y+parent->world_pos_y;
+	}
+	rect.x = world_pos_x;
+	rect.y = world_pos_y;
+
+	prev_mouse = mouse_pos_aux;
 }
 
 MouseState UIElement::CheckMouseState(int mouse_x, int mouse_y, MouseState mouse_click)
